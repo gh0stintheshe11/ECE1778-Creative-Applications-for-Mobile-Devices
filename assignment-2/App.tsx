@@ -1,11 +1,12 @@
 import { useState } from "react";
-// TODO: Import additional navigation components
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Activity, RootStackParamList } from "./types";
-// TODO: Import the remaining screen components
 import HomeScreen from "./screens/HomeScreen";
-// TODO: Import colors for consistent header styling
+import AddEditScreen from "./screens/AddEditScreen";
+import DetailsScreen from "./screens/DetailsScreen";
+import { colors } from "./constants/colors";
 
 // Initialize the Stack navigator with RootStackParamList for type-safe navigation
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -23,30 +24,33 @@ function RootStack({
 }) {
   return (
     <Stack.Navigator
-      // TODO: Set the initial screen to "Home"
-
-      // TODO: Configure screenOptions for header styling
-      // Use colors.primary for header background, colors.white for header tint, bold fontWeight, centered title, and "Back" for back button
-      screenOptions={{}}
+      initialRouteName="Home"
+      screenOptions={{
+        headerStyle: { backgroundColor: colors.primary },
+        headerTintColor: colors.white,
+        headerTitleStyle: { fontWeight: "bold" },
+        headerTitleAlign: "center",
+        headerBackTitle: "Back",
+      }}
     >
       <Stack.Screen name="Home">
-        {(props) => (
+        {(props: any) => (
           <HomeScreen
             {...props}
-            // TODO: Pass activities and setActivities as props
+            activities={activities}
+            setActivities={setActivities}
           />
         )}
       </Stack.Screen>
       <Stack.Screen name="AddEdit">
-        {/* TODO: Define AddEdit screen to render AddEditScreen */}
-        {/* Pass setActivities as a prop using the render function pattern */}
-        {/* Example: {(props) => <AddEditScreen ... />} */}
-        {}
+        {(props: any) => (
+          <AddEditScreen {...props} setActivities={setActivities} />
+        )}
       </Stack.Screen>
       <Stack.Screen name="Details">
-        {/* TODO: Define Details screen to render DetailsScreen */}
-        {/* Pass setActivities as a prop using the render function pattern */}
-        {}
+        {(props: any) => (
+          <DetailsScreen {...props} setActivities={setActivities} />
+        )}
       </Stack.Screen>
     </Stack.Navigator>
   );
@@ -57,8 +61,9 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      {/* TODO: Wrap RootStack with NavigationContainer */}
-      {/* TODO: Pass activities and setActivities to RootStack */}
+      <NavigationContainer>
+        <RootStack activities={activities} setActivities={setActivities} />
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }

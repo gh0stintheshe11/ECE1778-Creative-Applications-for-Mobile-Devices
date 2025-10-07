@@ -2,8 +2,8 @@ import { View, FlatList, StyleSheet, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Activity, NavigationProp } from "../types";
 import { globalStyles } from "../styles/globalStyles";
-// TODO: Import ActivityListItem
-// TODO: Import PrimaryButton
+import ActivityListItem from "../components/ActivityListItem";
+import PrimaryButton from "../components/PrimaryButton";
 
 type Props = {
   activities: Activity[];
@@ -15,27 +15,28 @@ export default function HomeScreen({ activities, setActivities }: Props) {
 
   return (
     <View style={globalStyles.container} testID="container">
-      {/* TODO: Display header text "Fitness Tracker" using globalStyles.headerText */}
+      <Text style={globalStyles.headerText}>Fitness Tracker</Text>
 
-      {/* TODO: Add a PrimaryButton with label "Add New Activity"
-          - On press, navigate to "AddEdit"  */}
+      <PrimaryButton onPress={() => navigation.navigate("AddEdit", {})}>
+        Add New Activity
+      </PrimaryButton>
 
       <View style={styles.buttonSpacer} />
 
-      {/* TODO: Add a FlatList to render activities
-          - Use activities as data
-          - keyExtractor should use item.id
-          - renderItem should render ActivityListItem with activity + setActivities
-          - Add contentContainerStyle for bottom padding (20)
-          - Add testID="activity-list" */}
+      <FlatList
+        data={activities}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <ActivityListItem activity={item} setActivities={setActivities} />
+        )}
+        contentContainerStyle={styles.list}
+        testID="activity-list"
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // TODO: Define list padding (paddingBottom: 20)
-  list: {},
-
-  // TODO: Define button spacer (height: 20)
-  buttonSpacer: {},
+  list: { paddingBottom: 20 },
+  buttonSpacer: { height: 20 },
 });

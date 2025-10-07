@@ -1,9 +1,9 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-// TODO: Import Activity and NavigationProp from "../types"
-// TODO: Import ActionButton component
-// TODO: Import Card component
-// TODO: Import colors from constants
+import { Activity, NavigationProp } from "../types";
+import ActionButton from "./ActionButton";
+import Card from "./Card";
+import { colors } from "../constants/colors";
 
 type Props = {
   activity: Activity;
@@ -14,32 +14,30 @@ export default function ActivityListItem({ activity, setActivities }: Props) {
   const navigation = useNavigation<NavigationProp>();
 
   const handleDelete = () => {
-    // TODO: Remove the current activity from state using setActivities
+    setActivities((prev) => prev.filter((a) => a.id !== activity.id));
   };
 
   return (
-    // TODO: Apply styles.card
-    <Card>
+    <Card style={styles.card}>
       <Pressable
-      // TODO: Pressable area for the activity content
-      // - Apply styles.content
-      // - Reduce opacity to 0.6 when pressed
-      // - onPress: navigate to "Details" with the current activity
+        style={({ pressed }) => [styles.content, { opacity: pressed ? 0.6 : 1 }]}
+        onPress={() => navigation.navigate("Details", { activity })}
       >
         <Text style={styles.text}>Type: {activity.type}</Text>
-        {/* - Apply styles.text to the other two Texts */}
+        <Text style={styles.text}>Duration: {activity.duration} min</Text>
+        <Text style={styles.text}>Calories: {activity.calories} cal</Text>
       </Pressable>
 
-      {/* TODO: Column of buttons */}
-      {/* - Apply styles.buttons */}
-      <View>
-        {/* TODO: Edit button */}
-        {/* - variant="primary" */}
-        {/* - onPress: navigate to "AddEdit" with current activity */}
-
-        {/* TODO: Delete button */}
-        {/* - variant="danger" */}
-        {/* - onPress: call handleDelete */}
+      <View style={styles.buttons}>
+        <ActionButton
+          variant="primary"
+          onPress={() => navigation.navigate("AddEdit", { activity })}
+        >
+          Edit
+        </ActionButton>
+        <ActionButton variant="danger" onPress={handleDelete}>
+          Delete
+        </ActionButton>
       </View>
     </Card>
   );

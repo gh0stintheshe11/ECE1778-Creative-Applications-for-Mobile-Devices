@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Activity, NavigationProp } from "../types";
 import { globalStyles } from "../styles/globalStyles";
 import { colors } from "../constants/colors";
-// TODO: Import PrimaryButton
+import PrimaryButton from "../components/PrimaryButton";
 
 type Props = {
   route: { params?: { activity?: Activity } };
@@ -24,58 +24,88 @@ export default function AddEditScreen({ route, setActivities }: Props) {
 
   useEffect(() => {
     navigation.setOptions({
-      title: "", // Remove header title to avoid redundancy
+      title: "",
     });
   }, [navigation]);
 
   const handleSubmit = () => {
-    // TODO: Validate inputs
-    // - type required
-    // - duration positive integer
-    // - calories optional (positive integer or default = duration * 10)
+    const isPositiveInteger = (s: string) => /^[1-9]\d*$/.test(s.trim());
+    const trimmedType = type.trim();
+    if (!trimmedType) {
+      Alert.alert("Error", "Please enter an activity type");
+      return;
+    }
+    if (!isPositiveInteger(duration)) {
+      Alert.alert("Error", "Duration must be a positive integer");
+      return;
+    }
+
+    const durationNum = parseInt(duration, 10);
+    let caloriesNum: number;
+    if (calories.trim() === "") {
+      caloriesNum = durationNum * 10;
+    } else {
+      if (!isPositiveInteger(calories)) {
+        Alert.alert("Error", "Calories must be a positive integer");
+        return;
+      }
+      caloriesNum = parseInt(calories, 10);
+    }
 
     if (activity) {
-      // TODO: If editing, update the existing activity
+      setActivities((prev) =>
+        prev.map((a) =>
+          a.id === activity.id
+            ? { ...a, type: trimmedType, duration: durationNum, calories: caloriesNum }
+            : a
+        )
+      );
     } else {
-      // TODO: If adding, create new Activity with unique id (Date.now().toString())
+      const newActivity: Activity = {
+        id: Date.now().toString(),
+        type: trimmedType,
+        duration: durationNum,
+        calories: caloriesNum,
+      };
+      setActivities((prev) => [...prev, newActivity]);
     }
-    // TODO: After updating state, navigate back to "Home"
+    navigation.navigate("Home");
   };
 
   return (
     <View style={globalStyles.container}>
-      {/* TODO: Show header text "Add Activity" or "Edit Activity" */}
+      <Text style={globalStyles.headerText}>
+        {activity ? "Edit Activity" : "Add Activity"}
+      </Text>
 
-      {/* TODO: TextInput for activity type */}
       <TextInput
-        style={}
+        style={styles.input}
         placeholder="Activity Type (e.g., Running)"
-        value={}
-        onChangeText={}
+        value={type}
+        onChangeText={setType}
         placeholderTextColor={colors.placeholder}
       />
 
-      {/* TODO: TextInput for duration (numeric keyboard) */}
       <TextInput
-        style={}
+        style={styles.input}
         placeholder="Duration (minutes)"
-        value={}
-        onChangeText={}
+        keyboardType="numeric"
+        value={duration}
+        onChangeText={setDuration}
         placeholderTextColor={colors.placeholder}
       />
 
-      {/* TODO: TextInput for calories (numeric keyboard, optional) */}
       <TextInput
-        style={}
+        style={styles.input}
         placeholder="Calories (optional, default: duration * 10)"
-        value={}
-        onChangeText={}
+        keyboardType="numeric"
+        value={calories}
+        onChangeText={setCalories}
         placeholderTextColor={colors.placeholder}
       />
-      {/* TODO: Add PrimaryButton to submit */}
-      {/* - Label: "Add Activity" or "Update Activity" */}
-      {/* - onPress: call handleSubmit */}
-      {/* - IMPORTANT: Include testID="add-button" for autograding */}
+      <PrimaryButton onPress={handleSubmit} testID="add-button">
+        {activity ? "Update Activity" : "Add Activity"}
+      </PrimaryButton>
     </View>
   );
 }

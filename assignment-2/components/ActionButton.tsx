@@ -5,7 +5,7 @@ import {
   StyleProp,
   ViewStyle,
 } from "react-native";
-// TODO: Import colors from constants
+import { colors } from "../constants/colors";
 
 type Variant = "primary" | "danger";
 
@@ -31,14 +31,20 @@ export default function ActionButton({
 
   return (
     <Pressable
-      // TODO: Apply styles.button, dynamic background color based on variant & pressed state, and any additional style
-      style={({ pressed }) => [style]}
+      style={({ pressed }) => [
+        styles.button,
+        {
+          backgroundColor: pressed
+            ? variantColors[variant].pressed
+            : variantColors[variant].base,
+        },
+        style,
+      ]}
       onPress={onPress}
       testID={testID}
       accessibilityRole="button"
     >
-      {/* TODO: Apply styles.text */}
-      <Text>{children}</Text>
+      <Text style={styles.text}>{children}</Text>
     </Pressable>
   );
 }

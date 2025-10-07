@@ -1,12 +1,16 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-// Activity type from Assignment 1
-export type Activity = {};
-
-// TODO: Define RootStackParamList mapping screen names to their route params
-export type RootStackParamList = {
-  Home: undefined; // Home screen has no parameters
-  // TODO: Add AddEdit (with optional Activity) and Details (with required Activity)
+export type Activity = {
+  id: string;
+  type: string;
+  duration: number;
+  calories: number;
 };
 
-// TODO: Create NavigationProp type alias using NativeStackNavigationProp<RootStackParamList>
+export type RootStackParamList = {
+  Home: undefined; 
+  AddEdit: { activity?: Activity } | undefined;
+  Details: { activity: Activity };
+};
+
+export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;

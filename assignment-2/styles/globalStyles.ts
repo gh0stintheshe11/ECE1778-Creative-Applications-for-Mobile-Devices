@@ -1,10 +1,19 @@
 import { StyleSheet } from "react-native";
-// TODO: Import colors from constants/colors
+import { colors } from "../constants/colors";
 
 export const globalStyles = StyleSheet.create({
-  // TODO: Define "container" style with flex, padding, and backgroundColor
-  container: {},
 
-  // TODO: Define "headerText" style with fontSize, fontWeight, color, textAlign, and marginBottom
-  headerText: {},
+  container: {
+    flex: 1,
+    padding: 15,
+    backgroundColor: colors.background,
+  },
+
+  headerText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: colors.textPrimary,
+    textAlign: "center",
+    marginBottom: 10,
+  },
 });

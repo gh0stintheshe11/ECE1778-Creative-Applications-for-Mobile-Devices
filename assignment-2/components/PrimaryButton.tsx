@@ -5,7 +5,7 @@ import {
   StyleProp,
   ViewStyle,
 } from "react-native";
-// TODO: Import colors from constants
+import { colors } from "../constants/colors";
 
 type Props = {
   onPress: () => void;
@@ -22,14 +22,16 @@ export default function PrimaryButton({
 }: Props) {
   return (
     <Pressable
-      // TODO: Apply styles.button, dynamic background color when pressed, and any additional style from props
-      style={({ pressed }) => [style]}
+      style={({ pressed }) => [
+        styles.button,
+        { backgroundColor: pressed ? colors.primaryPressed : colors.primary },
+        style,
+      ]}
       onPress={onPress}
       testID={testID}
       accessibilityRole="button"
     >
-      {/* TODO: Apply styles.text */}
-      <Text>{children}</Text>
+      <Text style={styles.text}>{children}</Text>
     </Pressable>
   );
 }

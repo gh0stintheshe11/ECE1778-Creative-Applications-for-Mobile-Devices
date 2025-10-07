@@ -2,7 +2,8 @@ import { View, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Activity, NavigationProp } from "../types";
 import { globalStyles } from "../styles/globalStyles";
-// TODO: Import DetailsCard and ActionButton components
+import DetailsCard from "../components/DetailsCard";
+import ActionButton from "../components/ActionButton";
 
 type Props = {
   route: { params: { activity: Activity } };
@@ -14,36 +15,43 @@ export default function DetailsScreen({ route, setActivities }: Props) {
   const { activity } = route.params;
 
   const handleDelete = () => {
-    // TODO: Remove activity from state
-    // TODO: Navigate back to "Home"
+    setActivities((prev) => prev.filter((a) => a.id !== activity.id));
+    navigation.navigate("Home");
   };
 
   return (
     <View style={globalStyles.container}>
-      {/* TODO: Display header text "Activity Details" using globalStyles.headerText */}
-      {/* TODO: Render DetailsCard to display the activity */}
+      <Text style={globalStyles.headerText}>Activity Details</Text>
+      <DetailsCard activity={activity} />
 
-      {/* TODO: Row of ActionButtons */}
       <View style={styles.buttons}>
-        {/* TODO: Edit button */}
-        {/* - variant="primary" */}
-        {/* - navigates to "AddEdit" with the current activity */}
-        {/* - use styles.button */}
-        {/* - IMPORTANT: Include testID="edit-button" for autograding */}
-
-        {/* TODO: Delete button */}
-        {/* - variant="danger" */}
-        {/* - removes activity from state and navigates to "Home" */}
-        {/* - use styles.button */}
-        {/* - IMPORTANT: Include testID="delete-button" for autograding */}
+        <ActionButton
+          variant="primary"
+          onPress={() => navigation.navigate("AddEdit", { activity })}
+          style={styles.button}
+          testID="edit-button"
+        >
+          Edit
+        </ActionButton>
+        <ActionButton
+          variant="danger"
+          onPress={handleDelete}
+          style={styles.button}
+          testID="delete-button"
+        >
+          Delete
+        </ActionButton>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // TODO: Row style for buttons
-  buttons: {},
-  // TODO: Individual button style
-  button: {},
+  buttons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    gap: 10,
+  },
+  button: { flex: 1 },
 });

@@ -1,23 +1,26 @@
 import { Text, StyleSheet } from "react-native";
-// TODO: Import Activity type from "../types"
-// TODO: Import Card component
-// TODO: Import colors from constants
+import { Activity } from "../types";
+import Card from "./Card";
+import { colors } from "../constants/colors";
 
 type Props = {
-  // TODO: Define Props type with a single property "activity" of type Activity
+  activity: Activity;
 };
 
 export default function DetailsCard({ activity }: Props) {
   return (
     <Card>
       <Text style={styles.text}>Type: {activity.type}</Text>
-      {/* TODO: Display activity duration */}
-      {/* TODO: Display activity calories */}
+      <Text style={styles.text}>Duration: {activity.duration} min</Text>
+      <Text style={styles.text}>Calories: {activity.calories} cal</Text>
     </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  // TODO: Text style for all details
-  text: {},
+  text: {
+    fontSize: 18,
+    color: colors.textPrimary,
+    marginVertical: 5,
+  },
 });
