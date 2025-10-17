@@ -1,79 +1,99 @@
 import { useState, useEffect } from "react";
 import { View, TextInput, Alert, Text, StyleSheet } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-// TODO: Import useActivities from contexts
-// TODO: Import globalStyles
-// TODO: Import colors from constants
-// TODO: Import PrimaryButton component
+import { useActivities } from "../contexts/ActivityContext";
+import { globalStyles } from "../styles/globalStyles";
+import { colors } from "../constants/colors";
+import PrimaryButton from "../components/PrimaryButton";
 
 export default function AddEditScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
-  // TODO: Get activities, addActivity, updateActivity from useActivities()
+  const { activities, addActivity, updateActivity } = useActivities();
 
-  // TODO: If an id is provided, find the matching activity from the list
-  const activity = /* check if id exists, then find the corresponding activity from activities */;
+  const activity = id ? activities.find((a) => a.id === id) : undefined;
 
-  // TODO: Create state for type, duration, calories
-  const [type, setType] = useState;
-  const [duration, setDuration] = useState;
-  const [calories, setCalories] = useState;
+  const [type, setType] = useState<string>("");
+  const [duration, setDuration] = useState<string>("0");
+  const [calories, setCalories] = useState<string>("");
 
   useEffect(() => {
     if (activity) {
-      // TODO: If editing an existing activity, populate state with activity values
+      setType(activity.type);
+      setDuration(String(activity.duration));
+      setCalories(String(activity.calories));
     }
   }, [activity]);
 
   const handleSubmit = () => {
-    // TODO: Validate inputs (reused from Assignment 1 & 2)
-    // - type required
-    // - duration must be positive integer
-    // - calories optional (positive integer or default = duration * 10)
+    if (!type.trim()) {
+      Alert.alert("Validation", "Activity type is required");
+      return;
+    }
+
+    const durationNum = parseInt(duration, 10);
+    if (isNaN(durationNum) || durationNum <= 0) {
+      Alert.alert("Validation", "Duration must be a positive integer");
+      return;
+    }
+
+    const caloriesNum = calories.trim()
+      ? parseInt(calories, 10)
+      : durationNum * 10;
+    if (isNaN(caloriesNum) || caloriesNum < 0) {
+      Alert.alert("Validation", "Calories must be a positive integer");
+      return;
+    }
+
+    const payload = {
+      type: type.trim(),
+      duration: durationNum,
+      calories: caloriesNum,
+    };
 
     if (activity) {
-      // TODO: Update existing activity using updateActivity
+      updateActivity(activity.id, payload);
     } else {
-      // TODO: Add new activity using addActivity
+      addActivity(payload);
     }
-    // TODO: Navigate back to Home ("/")
+    router.push("/");
   };
 
   return (
     <View style={globalStyles.container}>
-      {/* TODO: Display header text "Add Activity" or "Edit Activity" */}
+      <Text style={globalStyles.headerText}>
+        {activity ? "Edit Activity" : "Add Activity"}
+      </Text>
 
-      {/* TODO: TextInput for activity type */}
       <TextInput
         style={styles.input}
         placeholder="Activity Type (e.g., Running)"
-        value={}
-        onChangeText={}
+        value={type}
+        onChangeText={setType}
         placeholderTextColor={colors.placeholder}
       />
 
-      {/* TODO: TextInput for duration (numeric keyboard) */}
       <TextInput
         style={styles.input}
         placeholder="Duration (minutes)"
-        value={}
-        onChangeText={}
+        value={duration}
+        onChangeText={setDuration}
+        keyboardType="numeric"
         placeholderTextColor={colors.placeholder}
       />
 
-      {/* TODO: TextInput for calories (numeric keyboard, optional) */}
       <TextInput
         style={styles.input}
         placeholder="Calories (optional, default: duration * 10)"
-        value={}
-        onChangeText={}
+        value={calories}
+        onChangeText={setCalories}
+        keyboardType="numeric"
         placeholderTextColor={colors.placeholder}
       />
 
-      {/* TODO: PrimaryButton to submit */}
-      {/* - Label: "Add Activity" or "Update Activity" */}
-      {/* - onPress: call handleSubmit */}
-      {/* - IMPORTANT: Include testID="add-button" */}
+      <PrimaryButton onPress={handleSubmit} testID="add-button">
+        {activity ? "Update Activity" : "Add Activity"}
+      </PrimaryButton>
     </View>
   );
 }

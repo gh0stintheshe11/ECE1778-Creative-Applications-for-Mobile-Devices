@@ -1,12 +1,15 @@
 // Activity type from Assignment 1
 export type Activity = {
-  // TODO: Add id (string), type (string), duration (number), calories (number)
+  id: string;
+  type: string;
+  duration: number;
+  calories: number;
 };
 
-// TODO: Define ActivityContextType
-// - activities: Activity[]
-// - addActivity: function taking an Activity without id
-// - updateActivity: function taking an id and Activity without id
-// - deleteActivity: function taking an id
-// Hint: You may find the built-in `Omit` utility type helpful here
-export type ActivityContextType = {};
+// Activity context shape for Assignment 3
+export type ActivityContextType = {
+  activities: Activity[];
+  addActivity: (activity: Omit<Activity, "id">) => void;
+  updateActivity: (id: string, activity: Omit<Activity, "id">) => void;
+  deleteActivity: (id: string) => void;
+};

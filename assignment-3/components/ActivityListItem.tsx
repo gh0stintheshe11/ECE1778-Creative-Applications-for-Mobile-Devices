@@ -1,10 +1,10 @@
 import { Pressable, View, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-// TODO: Import Activity from "../types"
-// TODO: Import useActivities from "../contexts/ActivityContext"
-// TODO: Import ActionButton component
-// TODO: Import Card component
-// TODO: Import colors from constants
+import { Activity } from "../types";
+import { useActivities } from "../contexts/ActivityContext";
+import ActionButton from "./ActionButton";
+import Card from "./Card";
+import { colors } from "../constants/colors";
 
 type Props = {
   activity: Activity;
@@ -12,36 +12,33 @@ type Props = {
 
 export default function ActivityListItem({ activity }: Props) {
   const router = useRouter();
-  // TODO: Get deleteActivity function from useActivities()
+  const { deleteActivity } = useActivities();
 
   const handleDelete = () => {
-    // TODO: Delete the current activity using deleteActivity
+    deleteActivity(activity.id);
   };
 
   return (
-    // TODO: Apply styles.card
-    <Card>
+    <Card style={styles.card}>
       <Pressable
-      // TODO: Pressable area for activity content
-      // - Apply styles.content
-      // - Reduce opacity to 0.6 when pressed
-      // - onPress: navigate to details page with current activity
+        style={({ pressed }) => [styles.content, { opacity: pressed ? 0.6 : 1 }]}
+        onPress={() => router.push(`/details/${activity.id}`)}
       >
         <Text style={styles.text}>Type: {activity.type}</Text>
-        {/* TODO: Display duration with styles.text */}
-        {/* TODO: Display calories with styles.text */}
+        <Text style={styles.text}>Duration: {activity.duration} min</Text>
+        <Text style={styles.text}>Calories: {activity.calories} cal</Text>
       </Pressable>
 
-      {/* TODO: Column of buttons */}
-      {/* - Apply styles.buttons */}
       <View style={styles.buttons}>
-        {/* TODO: Edit button (ActionButton) */}
-        {/* - variant="primary" */}
-        {/* - onPress: navigate to add-edit page with current activity */}
-
-        {/* TODO: Delete button (ActionButton) */}
-        {/* - variant="danger" */}
-        {/* - onPress: call handleDelete */}
+        <ActionButton
+          variant="primary"
+          onPress={() => router.push(`/add-edit?id=${activity.id}`)}
+        >
+          Edit
+        </ActionButton>
+        <ActionButton variant="danger" onPress={handleDelete}>
+          Delete
+        </ActionButton>
       </View>
     </Card>
   );

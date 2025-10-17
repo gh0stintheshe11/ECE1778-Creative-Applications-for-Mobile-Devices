@@ -1,37 +1,39 @@
-import { View, FlatList, StyleSheet, Text } from "react-native";
+import { View, FlatList, StyleSheet, Text, ListRenderItem } from "react-native";
 import { useRouter } from "expo-router";
-// TODO: Import useActivities from "../contexts/ActivityContext"
-// TODO: Import globalStyles
-// TODO: Import ActivityListItem
-// TODO: Import PrimaryButton
+import { useActivities } from "../contexts/ActivityContext";
+import { globalStyles } from "../styles/globalStyles";
+import ActivityListItem from "../components/ActivityListItem";
+import PrimaryButton from "../components/PrimaryButton";
+import { Activity } from "../types";
 
 export default function HomeScreen() {
   const router = useRouter();
-  // TODO: Get activities from useActivities()
+  const { activities } = useActivities();
 
   return (
     <View style={globalStyles.container} testID="container">
-      {/* TODO: Display header text "Fitness Tracker" using globalStyles.headerText */}
+      <Text style={globalStyles.headerText}>Fitness Tracker</Text>
 
-      {/* TODO: Add a PrimaryButton with label "Add New Activity"
-          - On press, navigate to "/add-edit" */}
+      <PrimaryButton onPress={() => router.push("/add-edit")}> 
+        Add New Activity
+      </PrimaryButton>
 
       <View style={styles.buttonSpacer} />
 
-      {/* TODO: Add a FlatList to render activities
-          - Use activities as data
-          - keyExtractor should use item.id
-          - renderItem should render ActivityListItem with activity
-          - Apply styles.list as contentContainerStyle
-          - Add testID="activity-list" */}
+      <FlatList<Activity>
+        data={activities}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }: { item: Activity }) => (
+          <ActivityListItem activity={item} />
+        )}
+        contentContainerStyle={styles.list}
+        testID="activity-list"
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // TODO: Define list padding (paddingBottom: 20)
-  list: {},
-
-  // TODO: Define button spacer (height: 20)
-  buttonSpacer: {},
+  list: { paddingBottom: 20 },
+  buttonSpacer: { height: 20 },
 });

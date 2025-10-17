@@ -1,50 +1,58 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-// TODO: Import useActivities from contexts
-// TODO: Import globalStyles
-// TODO: Import DetailsCard and ActionButton components
+import { useActivities } from "../../contexts/ActivityContext";
+import { globalStyles } from "../../styles/globalStyles";
+import DetailsCard from "../../components/DetailsCard";
+import ActionButton from "../../components/ActionButton";
 
 export default function DetailsScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
-  // TODO: Get activities and deleteActivity from useActivities()
-  // TODO: Find the activity that matches the id
+  const { activities, deleteActivity } = useActivities();
+  const actId = Array.isArray(id) ? id[0] : id;
+  const activity = activities.find((a) => a.id === actId);
 
-  // TODO: Handle case when activity is not found
-  // - Return a View with globalStyles.container
-  // - Show "Activity Not Found" using globalStyles.headerText
+  if (!activity) {
+    return (
+      <View style={globalStyles.container}>
+        <Text style={globalStyles.headerText}>Activity Not Found</Text>
+      </View>
+    );
+  }
 
   const handleDelete = () => {
-    // TODO: Delete activity from context
-    // TODO: Navigate back to Home ("/")
+    deleteActivity(activity.id);
+    router.push("/");
   };
 
   return (
     <View style={globalStyles.container}>
-      {/* TODO: Display header text "Activity Details" using globalStyles.headerText */}
-      {/* TODO: Render DetailsCard to show the current activity */}
+      <Text style={globalStyles.headerText}>Activity Details</Text>
+      <DetailsCard activity={activity} />
 
-      {/* TODO: Row of ActionButtons */}
       <View style={styles.buttons}>
-        {/* TODO: Edit button */}
-        {/* - variant="primary" */}
-        {/* - navigates to "/add-edit?id=..." with the current activity */}
-        {/* - use styles.button */}
-        {/* - IMPORTANT: Include testID="edit-button" */}
-
-        {/* TODO: Delete button */}
-        {/* - variant="danger" */}
-        {/* - deletes activity and navigates back to Home */}
-        {/* - use styles.button */}
-        {/* - IMPORTANT: Include testID="delete-button" */}
+        <ActionButton
+          variant="primary"
+          onPress={() => router.push(`/add-edit?id=${activity.id}`)}
+          style={styles.button}
+          testID="edit-button"
+        >
+          Edit
+        </ActionButton>
+        <ActionButton
+          variant="danger"
+          onPress={handleDelete}
+          style={styles.button}
+          testID="delete-button"
+        >
+          Delete
+        </ActionButton>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // TODO: Row style for buttons
-  buttons: {},
-  // TODO: Individual button style
-  button: {},
+  buttons: { flexDirection: "row", gap: 10, marginTop: 10 },
+  button: { flex: 1 },
 });
